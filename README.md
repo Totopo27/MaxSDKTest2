@@ -1,89 +1,85 @@
-# calcmod - Max/MSP External Object
+# MaxSDKTest2 - Modular Arithmetic External Object
 
-`calcmod` is a Max/MSP external object that performs modular arithmetic operations in the context of musical temperaments. It's particularly useful for working with microtonal music and different temperament systems.
+A Max/MSP external object that performs modular arithmetic operations, useful for musical temperament calculations.
+
+## Description
+
+`calcmod` is a Max/MSP external object that performs addition and subtraction operations with modular arithmetic. It's particularly useful for musical applications where operations need to be performed within a specific temperament (e.g., 12-tone equal temperament).
 
 ## Features
 
-- Performs addition with modulo operation
-- Handles positive and negative numbers correctly
-- Configurable temperament value
-- Real-time calculation updates
-- Detailed logging for debugging
+- Addition and subtraction operations
+- Modular arithmetic with configurable temperament
+- Proper handling of negative numbers
+- Hot inlets for immediate calculation
+- Detailed debugging output
 
-## Installation
+## Inlets (from left to right)
 
-1. Copy the `calcmod.mxe64` file to your Max externals folder:
-   ```
-   C:\Program Files\Cycling '74\Max 8\resources\packages\max-mxj\java-classes\classes
-   ```
-2. Restart Max if it's running
+1. First sum input (int)
+2. Second sum input (int)
+3. First subtraction input (int)
+4. Second subtraction input (int)
+5. Temperament value for modulo (int, default: 12)
 
-## Usage
+## Outlet
 
-The object has 5 inlets (from left to right):
+- Single outlet that outputs the result of the most recently triggered operation (sum or subtraction) after applying the modulo operation
 
-0. First sum input (hot inlet)
-1. Second sum input
-2. First subtraction input (not used in current version)
-3. Second subtraction input (not used in current version)
-4. Temperament value (default: 12)
+## Usage Examples
 
-### Example Patch
-
+### Basic Addition with Modulo
 ```
-[10]  [7]  [0]  [0]  [19]
- |    |    |    |    |
- [calcmod]
-     |
-    [0]
+[5] [3]   [temperament: 12]
+ |   |          |
+[calcmod]
+ |
+[number]
+Result: (5 + 3) mod 12 = 8
 ```
 
-### Operation
+### Basic Subtraction with Modulo
+```
+      [8] [2]   [temperament: 12]
+       |   |          |
+    [calcmod]
+       |
+    [number]
+Result: (8 - 2) mod 12 = 6
+```
 
-1. Set the temperament value first (e.g., 19 for 19-EDO)
-2. Input values into the sum inlets
-3. The result will be the sum modulo temperament
+### Different Temperament Example
+```
+[5] [3]   [temperament: 7]
+ |   |          |
+[calcmod]
+ |
+[number]
+Result: (5 + 3) mod 7 = 1
+```
 
-For example:
-- With temperament = 19
-- sum_in1 = 10
-- sum_in2 = 7
-- Result = (10 + 7) mod 19 = 17
+## Building
 
-## Building from Source
-
-### Prerequisites
-
-- Visual Studio 2022
-- CMake
-- Max SDK
-
-### Build Steps
-
-1. Clone the repository
-2. Create a build directory:
+1. Clone this repository
+2. Make sure you have the Max SDK installed
+3. Update CMakeLists.txt with your Max SDK path if necessary
+4. Build using CMake:
    ```
    mkdir build
    cd build
-   ```
-3. Configure with CMake:
-   ```
    cmake ..
-   ```
-4. Build:
-   ```
    cmake --build . --config Release
    ```
 
-## Debugging
+## Installation
 
-The object includes detailed logging that can be viewed in the Max Console (Window > Max Console). The logs show:
+1. Copy the compiled external (`calcmod.mxe64` for Windows) to your Max externals folder
+2. Restart Max
+3. Create a new object with `[calcmod]`
 
-- Input values received on each inlet
-- Current state of all variables
-- Step-by-step calculation process
-- Final result
+## Notes
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- All inlets are "hot", meaning they trigger calculation immediately when receiving a value
+- The temperament value must be positive and non-zero (defaults to 12 if invalid)
+- Negative results are properly wrapped to positive values within the temperament range
+- The object provides detailed debugging output in the Max console
